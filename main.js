@@ -8,6 +8,19 @@ const client = new Client({
 const token = process.env.ClientToken;
 const serverID = '101752';
 
+function EditActivity(message) {
+  client.user.setPresence({
+    activities: [
+      {
+        name: "Players",
+        type: ActivityType.Custom,
+        state: message
+      }
+    ],
+    status: "online"
+  });
+}
+
 async function GetServerData() {
   try {
     const response = await axios.get(`https://api.scplist.kr/api/servers/${serverID}`);
@@ -25,14 +38,14 @@ client.on('ready', () => {
     const data = await GetServerData();
       
     if (!data.online)
-      return client.user.setActivity(`Server is offline`, ActivityType.Custom);
+      return EditActivity(`Server is offline`);
 
     if (!data || !data.players)
-      return client.user.setActivity(`Player count unavailable`, ActivityType.Custom);
+      return EditActivity(`Player count unavailable`);
 
     var [currentPlayers, maxPlayers] = data.players.split("/");
 
-    client.user.setActivity(`${currentPlayers} / ${maxPlayers} online`, ActivityType.Custom);
+    EditActivity(`${currentPlayers} / ${maxPlayers} online`);
   }, 60000);
 });
 
