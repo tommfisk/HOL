@@ -49,8 +49,8 @@ client.on('ready', () => {
   }, 60000);
 });
 
-client.on('message', async msg => {
-  if (msg.content != "judd") 
+client.on('message', msg => {
+  if (msg.content.toLowerCase().includes("judd")) 
     return;
 
   msg.reply('judd is smelly');
