@@ -8,7 +8,7 @@ const client = new Client({
 const token = process.env.ClientToken;
 const serverID = '101752';
 
-async function GetPlayerCount() {
+async function GetServerData() {
   try {
     const response = await axios.get(`https://api.scplist.kr/api/servers/${serverID}`);
     return response.data;
@@ -22,8 +22,11 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
   setInterval(async () => {
-    const data = await GetPlayerCount();
+    const data = await GetServerData();
       
+    if (!data.online)
+      return client.user.setActivity(`Server is offline`, ActivityType.Custom);
+
     if (!data || !data.players)
       return client.user.setActivity(`Player count unavailable`, ActivityType.Custom);
 
