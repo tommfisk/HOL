@@ -1,6 +1,9 @@
-const { Client, ActivityType } = require('discord.js');
-const client = new Client();
 const axios = require('axios');
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
+
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds]
+});
 
 const token = process.env.ClientToken;
 const serverID = '101752';
