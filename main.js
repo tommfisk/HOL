@@ -2,7 +2,7 @@ const axios = require('axios');
 const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds]
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]
 });
 
 const token = process.env.ClientToken;
@@ -47,6 +47,13 @@ client.on('ready', () => {
 
     EditActivity(`${currentPlayers} / ${maxPlayers} online`);
   }, 60000);
+});
+
+client.on('message', async msg => {
+  if (msg.content != "judd") 
+    return;
+
+  msg.reply('judd is smelly');
 });
 
 client.login(token);
