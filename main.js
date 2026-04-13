@@ -27,7 +27,9 @@ client.on('ready', () => {
     if (!data || !data.players)
       return client.user.setActivity(`Player count unavailable`, ActivityType.Custom);
 
-    client.user.setActivity(`${data.players} online`, ActivityType.Custom);
+    var [currentPlayers, maxPlayers] = data.players.split("/");
+
+    client.user.setActivity(`${currentPlayers} / ${maxPlayers} online`, ActivityType.Custom);
   }, 60000);
 });
 
