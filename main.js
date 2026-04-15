@@ -2,17 +2,13 @@ const axios = require('axios');
 const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds, 
-    GatewayIntentBits.MessageContent, 
-    GatewayIntentBits.GuildMessages
-  ]
+  intents: [ GatewayIntentBits.Guilds ]
 });
 
 const token = process.env.ClientToken;
 const serverID = '101752';
 
-function EditActivity(message) {
+function EditActivity(message, status) {
   client.user.setPresence({
     activities: [
       {
@@ -21,7 +17,7 @@ function EditActivity(message) {
         state: message
       }
     ],
-    status: "online"
+    status: status
   });
 }
 
@@ -29,7 +25,8 @@ async function GetServerData() {
   try {
     const response = await axios.get(`https://api.scplist.kr/api/servers/${serverID}`);
     return response.data;
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error fetching server data:', error);
     return null;
   }
@@ -39,28 +36,26 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
   setInterval(async () => {
-    const data = await GetServerData();
+    try {
+      const data = await GetServerData();
       
-    if (!data.online)
-      return EditActivity(`Server is offline`);
+      if (!data)
+        throw new Error("Failed to fetch server data");
 
-    if (!data || !data.players)
-      return EditActivity(`Player count unavailable`);
+      if (!data.online)
+        throw new Error("Server is offline");
 
-    var [currentPlayers, maxPlayers] = data.players.split("/");
+      if (!data.players)
+        throw new Error("Player count unavailable");
 
-    EditActivity(`${currentPlayers} / ${maxPlayers} online`);
+      var [currentPlayers, maxPlayers] = data.players.split("/");
+
+      EditActivity(`${currentPlayers} / ${maxPlayers} online`, currentPlayers == 0 ? "idle" : "online");
+    }
+    catch (error) {
+      return EditActivity(error.message, "dnd");
+    }
   }, 60000);
-});
-
-client.on('messageCreate', msg => {
-  if (msg.author.bot)
-    return;
-
-  if (!msg.content.toLowerCase().includes("judd")) 
-    return;
-
-  msg.reply('judd is smelly');
 });
 
 client.login(token);
