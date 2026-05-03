@@ -6,7 +6,7 @@ const client = new Client({
 });
 
 const token = process.env.ClientToken;
-const serverID = '101752';
+const serverID = process.env.ServerId;
 
 function EditActivity(message, status) {
   client.user.setPresence({
