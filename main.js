@@ -1,3 +1,4 @@
+require('dotenv').config();
 const axios = require('axios');
 const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 
